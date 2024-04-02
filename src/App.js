@@ -8,6 +8,10 @@ function App() {
     <>
       <div>
         <Toaster position='top-right' toastOptions={{
+          style: {
+            background: '#E96252',
+            color: '#fff',
+          },
           success: {
             theme: {
               primary: '#4aed88',
