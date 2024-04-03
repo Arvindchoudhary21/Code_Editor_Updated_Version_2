@@ -62,8 +62,13 @@ footer {
   margin-left: auto;
 }
 
+.copyBtn{
+  background: #ff6d61;
+}
+
 .joinBtn:hover,
-.leaveBtn:hover {
+.leaveBtn:hover,
+.copyBtn:hover {
   background: #ff3018;
 }
 
@@ -118,12 +123,12 @@ footer {
 
 }
 
-.username {
-  margin-top: 10px;
+.userName {
+  margin-top: 5px;
 }
 
 .logo {
-  border-bottom: 1px solid #424242;
+  border-bottom: 1px solid #e77373;
   padding-bottom: 10px;
 }
 
@@ -132,9 +137,8 @@ footer {
 }
 
 .leaveBtn {
-  margin-top: 20px;
+  margin-top: 15px;
   width: 100%;
-
 }
 
 /* saw the classname from console because it is included automatically by codemirror itself */
