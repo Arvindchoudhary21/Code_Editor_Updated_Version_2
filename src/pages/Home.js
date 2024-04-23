@@ -14,7 +14,7 @@ function Home() {
         // console.log(id);
         // green color tick is for success message
         // add container in app.js to use it
-        toast.success('Created a new room.')
+        toast.success('A new room created.')
     };
 
     const joinRoom = () => {
