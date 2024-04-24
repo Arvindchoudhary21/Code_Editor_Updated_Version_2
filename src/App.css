@@ -7,11 +7,12 @@
 }
 
 .formWrapper {
-  background: #3d1958;
+  background: #4f3939eb;
   padding: 20px;
   border-radius: 10px;
   width: 400px;
   max-width: 90%;
+  margin-left: 630px;
 }
 
 footer {
