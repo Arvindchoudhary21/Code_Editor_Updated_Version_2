@@ -95,7 +95,6 @@ footer {
   grid-template-columns: 230px 1fr;
   /* height: 100vh; */
 }
-
 .aside {
   background: #1c1e29;
   padding: 16px;
@@ -139,6 +138,7 @@ footer {
 
 .leaveBtn {
   margin-top: 15px;
+  margin-bottom: 85px;
   width: 100%;
 }
 

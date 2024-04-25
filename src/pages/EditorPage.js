@@ -126,11 +126,16 @@ function EditorPage() {
                 <button className='btn leaveBtn' onClick={leaveRoom}>Leave</button>
             </div>
             <div className='editorWrap'>
-                <Editor
-                    socketRef={socketRef}
-                    roomId={roomId}
-                    onCodeChange={(code) => { codeRef.current = code; }} //execute when called in editor.js
-                />
+                <div className='menuWrap'>
+                    <h1>hello arvind</h1>
+                </div>
+                <div>
+                    <Editor
+                        socketRef={socketRef}
+                        roomId={roomId}
+                        onCodeChange={(code) => { codeRef.current = code; }} //execute when called in editor.js
+                    />
+                </div>
             </div>
         </div>
     )
