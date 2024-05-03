@@ -1,71 +1,147 @@
-import React, { useEffect, useRef } from 'react'
-import Codemirror from 'codemirror'
-import 'codemirror/lib/codemirror.css'
-import 'codemirror/mode/javascript/javascript'
-import 'codemirror/theme/dracula.css'
-import 'codemirror/addon/edit/closetag'
-import 'codemirror/addon/edit/closebrackets'
-import ACTIONS from '../Actions'
+import React, { useEffect, useRef } from 'react';
+import Codemirror from 'codemirror';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/dracula.css';
+import 'codemirror/theme/3024-day.css';
+import 'codemirror/theme/3024-night.css';
+import 'codemirror/theme/eclipse.css';
+import 'codemirror/theme/material.css';
+import 'codemirror/theme/rubyblue.css';
+import 'codemirror/mode/javascript/javascript';
+import 'codemirror/mode/python/python';
+import 'codemirror/mode/xml/xml';
+import 'codemirror/mode/clike/clike';
+import 'codemirror/mode/css/css';
+import 'codemirror/addon/edit/closetag';
+import 'codemirror/addon/edit/closebrackets';
+import ACTIONS from '../Actions';
 
-function Editor({ socketRef, roomId, onCodeChange }) {
+const Editor = ({ socketRef, roomId, onCodeChange }) => {
+  const editorRef = useRef(null);
+  const modeOptions = {
+    javascript: { name: 'javascript', json: true },
+    python: { name: 'python' },
+    cplusplus: { name: 'text/x-c++src' },
+    java: { name: 'text/x-java' },
+    xml: { name: 'xml' },
+  };
+  const themeOptions = [
+    'dracula',
+    '3024-day',
+    '3024-night',
+    'eclipse',
+    'material',
+    'rubyblue',
+  ];
 
-    // we have to store the reference of the editor 
-    const editorRef = useRef(null);
-
-    useEffect(() => {
-        async function init() {
-            editorRef.current = Codemirror.fromTextArea(document.getElementById('realtimeEditor'), {
-                mode: { name: 'javascript', json: true },
-                theme: 'dracula',
-                autoCloseTag: true,
-                autoCloseBrackets: true,
-                lineNumbers: true,
-            })
-
-            editorRef.current.on('change', (instance, changes) => {
-                // console.log('changes', changes);
-                const { origin } = changes; // tells which type of operation performed in editor like insert text , delete text , cut , paste etc -> you can see on console 
-
-                // storing all code written in editor
-                let code = instance.getValue();
-                onCodeChange(code); //passing the code and execute the function and this function will be execute in EditorPage.js line 128
-
-                // console.log(code); // receiving all the text in console
-                if (origin !== 'setValue') {
-                    // sending this event on server.js
-                    socketRef.current.emit(ACTIONS.CODE_CHANGE, {
-                        roomId,
-                        code,
-                    })
-                }
-
-            })
-
-
+  useEffect(() => {
+    async function init() {
+      editorRef.current = Codemirror.fromTextArea(
+        document.getElementById('realtimeEditor'),
+        {
+          mode: modeOptions.javascript,
+          theme: 'dracula',
+          autoCloseTags: true,
+          autoCloseBrackets: true,
+          lineNumbers: true,
         }
-        init();
-    }, [])
+      );
 
-    useEffect(() => {
-        if (socketRef.current) {
-            socketRef.current.on(ACTIONS.CODE_CHANGE, ({ code }) => {
-                // console.log('codes ->', code); for debug purpose
-                if (code !== null) {
-                    editorRef.current.setValue(code)
-                }
-            })
+      editorRef.current.on('change', (instance, changes) => {
+        const { origin } = changes;
+        const code = instance.getValue();
+        onCodeChange(code);
+        if (origin !== 'setValue') {
+          socketRef.current.emit(ACTIONS.CODE_CHANGE, {
+            roomId,
+            code,
+          });
         }
+      });
+    }
+    init();
+  }, []);
 
-        // unsubscribe the code_change method
-        return () => {
-            socketRef.current.off(ACTIONS.CODE_CHANGE);
+  useEffect(() => {
+    if (socketRef.current) {
+      socketRef.current.on(ACTIONS.CODE_CHANGE, ({ code }) => {
+        if (code !== null) {
+          editorRef.current.setValue(code);
         }
+      });
+    }
 
-    }, [socketRef.current])
+    return () => {
+      socketRef.current.off(ACTIONS.CODE_CHANGE);
+    };
+  }, [socketRef.current]);
 
-    return (
-        <textarea id='realtimeEditor'></textarea>
-    )
-}
+  const handleModeChange = (e) => {
+    const mode = e.target.value;
+    editorRef.current.setOption('mode', modeOptions[mode]);
+  };
 
-export default Editor
+  const handleThemeChange = (e) => {
+    const theme = e.target.value;
+    editorRef.current.setOption('theme', theme);
+  };
+
+  const handleRunCode = () => {
+    const code = editorRef.current.getValue();
+    switch (editorRef.current.getOption("mode").name) {
+      case "javascript":
+        try {
+          eval(code);
+        } catch (e) {
+          console.error(e);
+        }
+        break;
+      case "python":
+        // Execute the Python code using a runtime environment
+       
+        break;
+      case "text/x-c++src":
+        // Execute the C++ code using a runtime environment
+        
+        break;
+      case "text/x-java":
+        // Execute the Java code using a runtime environment
+        
+        break;
+      case "xml":
+        // Execute the XML code using a runtime environment
+        
+        break;
+      default:
+        break;
+    }
+  };
+  return (
+    <>
+      <div>
+        <label htmlFor="mode-select">Language:</label>
+        <select id="mode-select" onChange={handleModeChange}>
+          <option value="javascript">JavaScript</option>
+          <option value="python">Python</option>
+          <option value="cplusplus">C++</option>
+          <option value="java">Java</option>
+          <option value="xml">XML</option>
+        </select>
+      </div>
+      <div>
+        <label htmlFor="theme-select">Theme:</label>
+        <select id="theme-select" onChange={handleThemeChange}>
+          {themeOptions.map((theme) => (
+            <option key={theme} value={theme}>
+              {theme}
+            </option>
+          ))}
+        </select>
+      </div>
+      <textarea id="realtimeEditor"></textarea>
+      {/* <button onClick={handleRunCode}>Run</button> */}
+    </>
+  );
+};
+
+export default Editor;

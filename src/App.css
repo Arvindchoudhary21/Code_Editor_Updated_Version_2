@@ -143,8 +143,18 @@ footer {
 
 /* saw the classname from console because it is included automatically by codemirror itself */
 .CodeMirror {
-  min-height: calc(100vh - 20px);
+  min-height: calc(100vh - 130px);
   font-size: 20px;
   line-height: 1.6;
   padding-top: 20px;
+}
+
+select {
+  margin-bottom: 10px;
+  display: block;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
 }
