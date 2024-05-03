@@ -87,59 +87,51 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
   };
 
   const handleRunCode = () => {
+    // Execute the code here
     const code = editorRef.current.getValue();
-    switch (editorRef.current.getOption("mode").name) {
-      case "javascript":
-        try {
-          eval(code);
-        } catch (e) {
-          console.error(e);
-        }
-        break;
-      case "python":
-        // Execute the Python code using a runtime environment
-       
-        break;
-      case "text/x-c++src":
-        // Execute the C++ code using a runtime environment
-        
-        break;
-      case "text/x-java":
-        // Execute the Java code using a runtime environment
-        
-        break;
-      case "xml":
-        // Execute the XML code using a runtime environment
-        
-        break;
-      default:
-        break;
-    }
+    // You can execute the code using eval() or any other appropriate method
+    // For demonstration purposes, just log the code
+    console.log('Running code:', code);
   };
+
   return (
     <>
-      <div>
-        <label htmlFor="mode-select">Language:</label>
-        <select id="mode-select" onChange={handleModeChange}>
-          <option value="javascript">JavaScript</option>
-          <option value="python">Python</option>
-          <option value="cplusplus">C++</option>
-          <option value="java">Java</option>
-          <option value="xml">XML</option>
-        </select>
-      </div>
-      <div>
-        <label htmlFor="theme-select">Theme:</label>
-        <select id="theme-select" onChange={handleThemeChange}>
-          {themeOptions.map((theme) => (
-            <option key={theme} value={theme}>
-              {theme}
-            </option>
-          ))}
-        </select>
+      <div className='menu' style={{ display: 'flex', alignItems: 'center' }}>
+        <div>
+          <label htmlFor="mode-select">Language:</label>
+          <select id="mode-select" onChange={handleModeChange}>
+            <option value="javascript">JavaScript</option>
+            <option value="python">Python</option>
+            <option value="cplusplus">C++</option>
+            <option value="java">Java</option>
+            <option value="xml">XML</option>
+          </select>
+        </div>
+        <div>
+          <label htmlFor="theme-select">Theme:</label>
+          <select id="theme-select" onChange={handleThemeChange}>
+            {themeOptions.map((theme) => (
+              <option key={theme} value={theme}>
+                {theme}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <button style={{ backgroundColor: '#007bff', color: 'white', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '5px', cursor: 'pointer', marginLeft: '1rem', fontSize: '1.1rem' }} onClick={handleRunCode}>Run</button>
+        </div>
       </div>
       <textarea id="realtimeEditor"></textarea>
-      {/* <button onClick={handleRunCode}>Run</button> */}
+      <div className='down'>
+        <div class="h-50">
+          <label for="Input" class="text-light mt-4 mb-2">Input</label>
+          <textarea type="text" id="input" class="form-control h-75" aria-label="Last name"></textarea>
+        </div>
+        <div class="h-50">
+          <label for="Output" class="text-light mb-2">Output</label>
+          <textarea type="text" id="output" class="form-control h-75" aria-label="Last name"></textarea>
+        </div>
+      </div>
     </>
   );
 };
