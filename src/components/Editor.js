@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Codemirror from 'codemirror';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/dracula.css';
@@ -18,6 +18,8 @@ import ACTIONS from '../Actions';
 
 const Editor = ({ socketRef, roomId, onCodeChange }) => {
   const editorRef = useRef(null);
+  const [input, setInput] = useState('');
+  const [output, setOutput] = useState('');
   const modeOptions = {
     javascript: { name: 'javascript', json: true },
     python: { name: 'python' },
@@ -87,11 +89,18 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
   };
 
   const handleRunCode = () => {
-    // Execute the code here
     const code = editorRef.current.getValue();
-    // You can execute the code using eval() or any other appropriate method
-    // For demonstration purposes, just log the code
-    console.log('Running code:', code);
+    console.log(code);
+    fetch('http://localhost:3000/runcode', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ code, input, lang: 'python' }), // Adjust the language as needed
+    })
+      .then(response => response.json())
+      .then(data => setOutput(data.output))
+      .catch(error => console.error('Error:', error));
   };
 
   return (
@@ -118,20 +127,20 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
           </select>
         </div>
         <div>
-          <button style={{ backgroundColor: '#007bff', color: 'white', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '5px', cursor: 'pointer', marginLeft: '1rem', fontSize: '1.1rem' }} onClick={handleRunCode}>Run</button>
+          {/* <button style={{ backgroundColor: '#007bff', color: 'white', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '5px', cursor: 'pointer', marginLeft: '1rem', fontSize: '1.1rem' }} onClick={handleRunCode}>Run</button> */}
         </div>
       </div>
+      {/* <div className='down'>
+        <div className="h-50">
+          <label htmlFor="Input" className="text-light mt-4 mb-2">Input</label>
+          <textarea value={input} onChange={(e) => setInput(e.target.value)} id="input" className="form-control h-75" aria-label="Input"></textarea>
+        </div>
+        <div className="h-50">
+          <label htmlFor="Output" className="text-light mb-2">Output</label>
+          <textarea value={output} id="output" className="form-control h-75" aria-label="Output" readOnly></textarea>
+        </div>
+      </div> */}
       <textarea id="realtimeEditor"></textarea>
-      <div className='down'>
-        <div class="h-50">
-          <label for="Input" class="text-light mt-4 mb-2">Input</label>
-          <textarea type="text" id="input" class="form-control h-75" aria-label="Last name"></textarea>
-        </div>
-        <div class="h-50">
-          <label for="Output" class="text-light mb-2">Output</label>
-          <textarea type="text" id="output" class="form-control h-75" aria-label="Last name"></textarea>
-        </div>
-      </div>
     </>
   );
 };
