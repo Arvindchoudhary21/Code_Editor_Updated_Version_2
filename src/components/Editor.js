@@ -127,19 +127,19 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
           </select>
         </div>
         <div>
-          {/* <button style={{ backgroundColor: '#007bff', color: 'white', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '5px', cursor: 'pointer', marginLeft: '1rem', fontSize: '1.1rem' }} onClick={handleRunCode}>Run</button> */}
+          <button style={{ backgroundColor: '#007bff', color: 'white', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '5px', cursor: 'pointer', marginLeft: '1rem', fontSize: '1.1rem' }} onClick={handleRunCode}>Run</button>
         </div>
       </div>
-      {/* <div className='down'>
+      <div className='down'>
         <div className="h-50">
-          <label htmlFor="Input" className="text-light mt-4 mb-2">Input</label>
+          <label htmlFor="Input" className="inputLabel">Input</label>
           <textarea value={input} onChange={(e) => setInput(e.target.value)} id="input" className="form-control h-75" aria-label="Input"></textarea>
         </div>
         <div className="h-50">
-          <label htmlFor="Output" className="text-light mb-2">Output</label>
+          <label htmlFor="Output" className="outputLabel">Output</label>
           <textarea value={output} id="output" className="form-control h-75" aria-label="Output" readOnly></textarea>
         </div>
-      </div> */}
+      </div>
       <textarea id="realtimeEditor"></textarea>
     </>
   );
