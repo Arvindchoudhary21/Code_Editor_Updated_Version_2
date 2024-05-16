@@ -20,6 +20,7 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
   const editorRef = useRef(null);
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
+  const [Lang, setLang] = useState('');
   const modeOptions = {
     javascript: { name: 'javascript', json: true },
     python: { name: 'python' },
@@ -81,6 +82,8 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
   const handleModeChange = (e) => {
     const mode = e.target.value;
     editorRef.current.setOption('mode', modeOptions[mode]);
+    setLang(mode);
+    console.log(mode);
   };
 
   const handleThemeChange = (e) => {
@@ -89,18 +92,48 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
   };
 
   const handleRunCode = () => {
-    const code = editorRef.current.getValue();
-    console.log(code);
-    fetch('http://localhost:3000/runcode', {
+    const code = editorRef.current.getValue(); // Assuming editorRef is your reference to CodeMirror editor
+    const Input = input; // Get input value from your component's state
+    const language = Lang; // Assuming you want to execute python code
+    console.log(language);
+    let all = {
+      code: editorRef.current.getValue(),
+      Input: input,
+      lang: Lang,
+    }
+
+    // Make a POST request to the server
+    fetch('http://localhost:5000/runcode', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ code, input, lang: 'python' }), // Adjust the language as needed
+      body: JSON.stringify(all),
     })
-      .then(response => response.json())
-      .then(data => setOutput(data.output))
-      .catch(error => console.error('Error:', error));
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        // console.log(response.json());
+        // let b = response.json();
+        // console.log(b);
+        return response.json();
+      })
+      .then(data => {
+        // Handle the response
+        if (data.output) {
+            // Update output state with the output received
+            setOutput(data.output);
+        } else {
+            // Handle error, if any
+            console.error('Error:', data.error);
+        }
+        // let a = data.json();
+        // console.log(data.output);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
   };
 
   return (
@@ -111,7 +144,7 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
           <select id="mode-select" onChange={handleModeChange}>
             <option value="javascript">JavaScript</option>
             <option value="python">Python</option>
-            <option value="cplusplus">C++</option>
+            <option value="cplusplus">Cpp</option>
             <option value="java">Java</option>
             <option value="xml">XML</option>
           </select>

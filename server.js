@@ -5,6 +5,16 @@ const { Server } = require('socket.io');
 const ACTIONS = require('./src/Actions');
 const server = http.createServer(app)
 const io = new Server(server);
+var cors = require('cors')
+
+
+const compiler = require("compilex");
+const { log } = require('console');
+const options = { stats: true };
+compiler.init(options);
+
+app.use(express.json());
+app.use(cors())
 
 // map all the joined user's socket id with username in this userSocketMap object
 const userSocketMap = {}
@@ -71,6 +81,70 @@ io.on('connection', (socket) => {
         socket.leave(); //leave the room
     })
 })
+
+
+
+
+
+app.get("/test" , (req,res) => {
+    res.json("success");
+})
+compiler.flush(function(){
+    console.log("deleted");
+})
+app.post("/runcode", function (req, res) {
+    var code = req.body.code;
+    var input = req.body.Input;
+    var lang = req.body.lang; // Adjusted to match the expected field name in editor.js
+    try {
+        if (lang == "javascript") {
+            var envData = { OS: "windows" }; // Modify environment data as needed
+            if (input) {
+                compiler.compileNodeWithInput(envData, code, input, handleResponse); // Assuming you want to execute JavaScript code on Node.js
+            } else {
+                compiler.compileNode(envData, code, handleResponse); // Assuming you want to execute JavaScript code on Node.js
+            }
+        } else if (lang == "python") {
+            var envData = { OS: "windows" }; // Modify environment data as needed
+            if (input) {
+                compiler.compilePythonWithInput(envData, code, input, handleResponse);
+            } else {
+                compiler.compilePython(envData, code, handleResponse);
+            }
+        }else if (lang == "cplusplus") {
+            var envData = { OS: "windows", cmd: "g++", options: { timeout: 10000 } };
+            if (input) {
+                compiler.compileCPPWithInput(envData, code, input, handleResponse);
+            } else {
+                compiler.compileCPP(envData, code, handleResponse);
+            }
+        }
+         else {
+            throw new Error("Unsupported language");
+        }
+    }
+     catch (e) {
+        console.log("error:", e);
+        res.status(400).send({ output: "Error: " + e.message });
+    }
+
+    function handleResponse(data) {
+        if (data.output) {
+            res.status(200).send(data);
+        } else {
+            res.status(400).send({ output: "Error: Execution failed" });
+        }
+    }
+
+    // res.status(202).json({
+    //     output : "success",
+    // });
+    
+
+});
+
+
+
 
 
 

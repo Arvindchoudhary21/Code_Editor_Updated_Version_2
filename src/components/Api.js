@@ -1,45 +1,49 @@
 const express = require("express");
 const app = express();
-const bodyParser = require("body-parser");
+const bodyP = require("body-parser");
 const compiler = require("compilex");
-
 const options = { stats: true };
 compiler.init(options);
 
-app.use(bodyParser.json());
+app.use(bodyP.json());
 
-app.post('/runcode', function (req, res) {
-    const code = req.body.code;
-    const input = req.body.input;
-    const lang = req.body.lang;
-    console.log(code);
+app.post("/runcode", function (req, res) {
+    var code = req.body.code;
+    var input = req.body.Input;
+    var lang = req.body.language; // Adjusted to match the expected field name in editor.js
 
     try {
-        if (lang === "python") {
-            const envData = { OS: "windows" };
+        if (lang === "javascript") {
+            var envData = { OS: "windows" }; // Modify environment data as needed
+            if (input) {
+                compiler.compileNodeWithInput(envData, code, input, handleResponse); // Assuming you want to execute JavaScript code on Node.js
+            } else {
+                compiler.compileNode(envData, code, handleResponse); // Assuming you want to execute JavaScript code on Node.js
+            }
+        } else if (lang === "python") {
+            var envData = { OS: "windows" }; // Modify environment data as needed
             if (input) {
                 compiler.compilePythonWithInput(envData, code, input, handleResponse);
             } else {
                 compiler.compilePython(envData, code, handleResponse);
             }
         } else {
-            res.status(400).json({ error: "Unsupported language" });
+            throw new Error("Unsupported language");
         }
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Internal server error" });
+    } catch (e) {
+        console.log("error:", e);
+        res.status(400).send({ output: "Error: " + e.message });
     }
 
     function handleResponse(data) {
         if (data.output) {
-            res.json({ output: data.output });
+            res.status(200).send(data);
         } else {
-            res.status(500).json({ error: "Compilation or execution error" });
+            res.status(400).send({ output: "Error: Execution failed" });
         }
     }
 });
 
-
-app.listen(3000, () => {
-    console.log("Server is running on port 3000");
+app.listen(8000, () => {
+    console.log("Server is running on port 8000");
 });
