@@ -112,6 +112,7 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
     })
       .then(response => {
         if (!response.ok) {
+          setOutput("Wrong Code! Please check for errors....");
           throw new Error('Network response was not ok');
         }
         // console.log(response.json());
@@ -127,6 +128,7 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
         } else {
             // Handle error, if any
             console.error('Error:', data.error);
+            
         }
         // let a = data.json();
         // console.log(data.output);
