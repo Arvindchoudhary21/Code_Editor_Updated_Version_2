@@ -162,7 +162,7 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
           </select>
         </div>
         <div>
-          <button style={{ backgroundColor: '#007bff', color: 'white', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '5px', cursor: 'pointer', marginLeft: '1rem', fontSize: '1.1rem' }} onClick={handleRunCode}>Run</button>
+          <button style={{ backgroundColor: '#007bff', color: 'white', border: 'none', padding: '0.75rem 2.5rem', borderRadius: '15px', cursor: 'pointer', marginLeft: '1rem',marginTop: '25px', fontSize: '1.1rem' }} onClick={handleRunCode}>Run</button>
         </div>
       </div>
       <div className='down'>
