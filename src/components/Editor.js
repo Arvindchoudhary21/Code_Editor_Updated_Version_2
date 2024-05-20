@@ -14,6 +14,10 @@ import 'codemirror/mode/clike/clike';
 import 'codemirror/mode/css/css';
 import 'codemirror/addon/edit/closetag';
 import 'codemirror/addon/edit/closebrackets';
+import 'codemirror/addon/edit/matchbrackets';
+import 'codemirror/addon/edit/matchtags';
+import 'codemirror/addon/edit/trailingspace';
+import 'codemirror/addon/display/placeholder';
 import ACTIONS from '../Actions';
 
 const Editor = ({ socketRef, roomId, onCodeChange }) => {
@@ -37,6 +41,24 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
     'rubyblue',
   ];
 
+  function toggleComment(editor) {
+    editor.operation(function () {
+      var selections = editor.listSelections();
+      for (var i = 0; i < selections.length; i++) {
+        var from = selections[i].from().line;
+        var to = selections[i].to().line;
+        for (var j = from; j <= to; j++) {
+          var line = editor.getLine(j);
+          if (line.trim().startsWith('//')) {
+            editor.replaceRange(line.replace('//', ''), { line: j, ch: 0 }, { line: j, ch: line.length });
+          } else {
+            editor.replaceRange('//' + line, { line: j, ch: 0 }, { line: j, ch: line.length });
+          }
+        }
+      }
+    });
+  }
+
   useEffect(() => {
     async function init() {
       editorRef.current = Codemirror.fromTextArea(
@@ -46,6 +68,16 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
           theme: 'dracula',
           autoCloseTags: true,
           autoCloseBrackets: true,
+          autoCloseTags: true,
+          matchBrackets: true,
+          matchTags: true,
+          showTrailingSpace: true,
+          placeholder: 'Enter your code here...',
+          extraKeys: {
+            'Ctrl-/': function (cm) {
+              toggleComment(cm);
+            }
+          },
           lineNumbers: true,
         }
       );
@@ -123,12 +155,12 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
       .then(data => {
         // Handle the response
         if (data.output) {
-            // Update output state with the output received
-            setOutput(data.output);
+          // Update output state with the output received
+          setOutput(data.output);
         } else {
-            // Handle error, if any
-            console.error('Error:', data.error);
-            
+          // Handle error, if any
+          console.error('Error:', data.error);
+
         }
         // let a = data.json();
         // console.log(data.output);
@@ -162,7 +194,7 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
           </select>
         </div>
         <div>
-          <button style={{ backgroundColor: '#007bff', color: 'white', border: 'none', padding: '0.75rem 2.5rem', borderRadius: '15px', cursor: 'pointer', marginLeft: '1rem',marginTop: '25px', fontSize: '1.1rem' }} onClick={handleRunCode}>Run</button>
+          <button style={{ backgroundColor: '#007bff', color: 'white', border: 'none', padding: '0.75rem 2.5rem', borderRadius: '15px', cursor: 'pointer', marginLeft: '1rem', marginTop: '25px', fontSize: '1.1rem' }} onClick={handleRunCode}>Run</button>
         </div>
       </div>
       <div className='down'>
