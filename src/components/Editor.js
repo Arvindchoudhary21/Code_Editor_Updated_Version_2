@@ -18,6 +18,7 @@ import 'codemirror/addon/edit/matchbrackets';
 import 'codemirror/addon/edit/matchtags';
 import 'codemirror/addon/edit/trailingspace';
 import 'codemirror/addon/display/placeholder';
+import 'codemirror/addon/selection/active-line';
 import ACTIONS from '../Actions';
 
 const Editor = ({ socketRef, roomId, onCodeChange }) => {
@@ -72,7 +73,8 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
           matchBrackets: true,
           matchTags: true,
           showTrailingSpace: true,
-          placeholder: 'Enter your code here...',
+          styleActiveLine: true,
+          // placeholder: 'Enter your code here...',
           extraKeys: {
             'Ctrl-/': function (cm) {
               toggleComment(cm);
