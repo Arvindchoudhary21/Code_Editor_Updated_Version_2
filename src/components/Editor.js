@@ -129,7 +129,7 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
     const code = editorRef.current.getValue(); // Assuming editorRef is your reference to CodeMirror editor
     const Input = input; // Get input value from your component's state
     const language = Lang; // Assuming you want to execute python code
-    console.log(language);
+    console.log(Lang);
     let all = {
       code: editorRef.current.getValue(),
       Input: input,
@@ -178,11 +178,10 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
         <div>
           <label htmlFor="mode-select">Language:</label>
           <select id="mode-select" onChange={handleModeChange}>
-            <option value="javascript">JavaScript</option>
             <option value="python">Python</option>
             <option value="cplusplus">Cpp</option>
             <option value="java">Java</option>
-            <option value="xml">XML</option>
+            
           </select>
         </div>
         <div>

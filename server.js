@@ -89,20 +89,21 @@ io.on('connection', (socket) => {
 app.get("/test" , (req,res) => {
     res.json("success");
 })
-compiler.flush(function(){
-    console.log("deleted");
-})
+// compiler.flush(function(){
+//     console.log("deleted");
+// })
 app.post("/runcode", function (req, res) {
     var code = req.body.code;
     var input = req.body.Input;
     var lang = req.body.lang; // Adjusted to match the expected field name in editor.js
+    console.log(lang);
     try {
-        if (lang == "javascript") {
-            var envData = { OS: "windows" }; // Modify environment data as needed
+        if (lang == "java") {
+            var envData = { OS: "windows" };
             if (input) {
-                compiler.compileNodeWithInput(envData, code, input, handleResponse); // Assuming you want to execute JavaScript code on Node.js
+                compiler.compileJavaWithInput(envData, code, input, handleResponse);
             } else {
-                compiler.compileNode(envData, code, handleResponse); // Assuming you want to execute JavaScript code on Node.js
+                compiler.compileJava(envData, code, handleResponse);
             }
         } else if (lang == "python") {
             var envData = { OS: "windows" }; // Modify environment data as needed
