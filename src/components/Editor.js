@@ -25,7 +25,7 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
   const editorRef = useRef(null);
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
-  const [Lang, setLang] = useState('');
+  const [Lang, setLang] = useState('python');
   const modeOptions = {
     javascript: { name: 'javascript', json: true },
     python: { name: 'python' },
@@ -178,7 +178,7 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
         <div>
           <label htmlFor="mode-select">Language:</label>
           <select id="mode-select" onChange={handleModeChange}>
-            <option value="python">Python</option>
+            <option value="python">python</option>
             <option value="cplusplus">Cpp</option>
             <option value="java">Java</option>
             
